@@ -16,7 +16,7 @@
 
 Attention 计算分成三步完成：
 
-$S=\frac{QK^T}{\sqrt D},\qquad P=\operatorname{softmax}(S),\qquad O=PV $
+$S=\frac{QK^T}{\sqrt D},\qquad P=\mathrm{softmax}(S),\qquad O=PV $
 
 计算理解：先算匹配分数，再把分数转换成权重，最后按权重汇总 V。
 
@@ -104,7 +104,7 @@ torch.testing.assert_close(output, expected, atol=1e-4, rtol=0)
 
 上述简介中的 attention 计算是：
 
-$O=\operatorname{softmax}(QK^T/\sqrt D)V$
+$O=\mathrm{softmax}(QK^T/\sqrt D)V$
 
 但模型中的完整 attention 模块还包括生成 QKV 投影，以及输出投影。完整流程大致是：
 

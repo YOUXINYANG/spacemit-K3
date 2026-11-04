@@ -28,7 +28,7 @@ y[i] = a[i] + b[i]
 
 SiLU 对每个输入做下面的变换：
 
-$\operatorname{SiLU}(x)=x\cdot\operatorname{sigmoid}(x) =\frac{x}{1+e^{-x}}$
+$\mathrm{SiLU}(x)=x\cdot\mathrm{sigmoid}(x) =\frac{x}{1+e^{-x}}$
 
 虽然公式变复杂了，但不同位置之间仍然互不依赖。可以使用相似的“分块 → 读取 → 计算 → 写回”框架。
 
@@ -36,7 +36,7 @@ $\operatorname{SiLU}(x)=x\cdot\operatorname{sigmoid}(x) =\frac{x}{1+e^{-x}}$
 
 本教程实现的 SwiGLU 核心计算是：
 
-$y_i=\operatorname{SiLU}(g_i)\cdot u_i$
+$y_i=\mathrm{SiLU}(g_i)\cdot u_i$
 
 这里的 `g` 和 `u` 是两个输入张量。
 
@@ -203,7 +203,7 @@ y.to(Y.dtype.element_ty)
 
 表达式是：
 
-$Y_{m,n}=\operatorname{SiLU}\left((AB)_{m,n}+b_n\right)$
+$Y_{m,n}=\mathrm{SiLU}\left((AB)_{m,n}+b_n\right)$
 
 融合的是 GEMM \+ bias \+ SiLU。它可以对应 MLP 中 gate 分支的一段计算，完整 SwiGLU 还需要与 up 分支的结果相乘。
 

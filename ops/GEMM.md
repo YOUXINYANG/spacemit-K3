@@ -538,7 +538,7 @@ a_ptrs = A + rows[:, None] * sa0 + k[None, :] * sa1
 
 假设 A 是行优先连续存储，访问 `A[i,j]` 的元素地址可以表示为：
 
-$\operatorname{Addr}(A[i,j]) =\operatorname{Base}(A)+i\cdot sa0+j\cdot sa1$
+$\mathrm{Addr}(A[i,j]) =\mathrm{Base}(A)+i\cdot sa0+j\cdot sa1$
 
 `sa0` 和 `sa1` 分别表示矩阵 A 在两个维度上的 步长（Stride）。
 
