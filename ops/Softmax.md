@@ -4,7 +4,9 @@
 
 对于一行输入 $x$，Softmax 的定义是：
 
-$y_i=\frac{e^{x_i}}{\sum_j e^{x_j}}$
+```math
+y_i=\frac{e^{x_i}}{\sum_j e^{x_j}}
+```
 
 作用：在 attention 中，负责把分数转换成权重。
 
@@ -24,7 +26,9 @@ $y_i=\frac{e^{x_i}}{\sum_j e^{x_j}}$
 
 由于直接计算指数可能产生溢出，教程中采用下面的稳定写法，与原公式等价。
 
-$m=\max_j x_j,\qquad y_i=\frac{e^{x_i-m}}{\sum_j e^{x_j-m}}$
+```math
+m=\max_j x_j,\qquad y_i=\frac{e^{x_i-m}}{\sum_j e^{x_j-m}}
+```
 
 ## Pytorch 实现
 

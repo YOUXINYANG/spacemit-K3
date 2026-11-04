@@ -8,7 +8,9 @@ Root Mean Square Normalization，均方根归一化。
 
 计算公式：
 
-$\boxed{y_i=\frac{x_i}{\sqrt{\frac{1}{N}\sum_{j=1}^{N}x_j^2+\epsilon}}\cdot w_i}$
+```math
+\boxed{y_i=\frac{x_i}{\sqrt{\frac{1}{N}\sum_{j=1}^{N}x_j^2+\epsilon}}\cdot w_i}
+```
 
 - $x_i$：输入向量的第 $i$个元素
 
@@ -36,11 +38,15 @@ $\boxed{y_i=\frac{x_i}{\sqrt{\frac{1}{N}\sum_{j=1}^{N}x_j^2+\epsilon}}\cdot w_i}
 
 LayerNorm 的计算公式：
 
-$y_i=\frac{x_i-\mu}{\sqrt{\sigma^2+\epsilon}}\gamma_i+\beta_i$
+```math
+y_i=\frac{x_i-\mu}{\sqrt{\sigma^2+\epsilon}}\gamma_i+\beta_i
+```
 
 RMSNorm 的计算公式：
 
-$y_i=\frac{x_i}{\sqrt{ms+\epsilon}}w_i$
+```math
+y_i=\frac{x_i}{\sqrt{ms+\epsilon}}w_i
+```
 
 RMSNorm 不需要减去均值，减少了一次归约计算，也简化了 kernal 实现。
 
@@ -512,7 +518,9 @@ def rms_norm_1d_kernel(X: tle.mem(f16), out: tle.mem(f32, out=True), N: tle.inde
 
 示例处理的是一个一维向量，没有乘权重 `w`，输入为 float16，输出为 float32。 它计算的是：
 
-$out_i=\frac{x_i}{\sqrt{\frac{1}{N}\sum_jx_j^2+\mathrm{EPS}}}$
+```math
+out_i=\frac{x_i}{\sqrt{\frac{1}{N}\sum_jx_j^2+\mathrm{EPS}}}
+```
 
 ### Kernal 开头
 
@@ -619,7 +627,9 @@ tle.vreduce_sum(acc)
 
 执行上述，才会把各位置的部分合并成一个 float32 标量。再除以实际元素数 `N`，得到均方：
 
-$ms=\frac{\sum_{j=0}^{N-1}x_j^2}{N}$
+```math
+ms=\frac{\sum_{j=0}^{N-1}x_j^2}{N}
+```
 
 然后计算：
 
@@ -627,7 +637,9 @@ $ms=\frac{\sum_{j=0}^{N-1}x_j^2}{N}$
 scale = tle.rsqrt(ms + EPS)
 ```
 
-$scale=\frac{1}{\sqrt{ms+\mathrm{EPS}}}$
+```math
+scale=\frac{1}{\sqrt{ms+\mathrm{EPS}}}
+```
 
 ### Pass 2
 

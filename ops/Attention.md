@@ -16,7 +16,9 @@
 
 Attention 计算分成三步完成：
 
-$S=\frac{QK^T}{\sqrt D},\qquad P=\mathrm{softmax}(S),\qquad O=PV $
+```math
+S=\frac{QK^T}{\sqrt D},\qquad P=\mathrm{softmax}(S),\qquad O=PV
+```
 
 计算理解：先算匹配分数，再把分数转换成权重，最后按权重汇总 V。
 
@@ -32,27 +34,39 @@ P (M,M) × V (M,D)   → O (M,D)
 
 教程使用：
 
-$Q=\begin{bmatrix}1&0\\0&1\end{bmatrix},\quad K=\begin{bmatrix}1&0\\1&1\end{bmatrix},\quad V=\begin{bmatrix}10&20\\30&40\end{bmatrix}$
+```math
+Q=\begin{bmatrix}1&0\\0&1\end{bmatrix},\quad K=\begin{bmatrix}1&0\\1&1\end{bmatrix},\quad V=\begin{bmatrix}10&20\\30&40\end{bmatrix}
+```
 
 先计算匹配分数：
 
-$S=QK^T= \begin{bmatrix}1&1\\0&1\end{bmatrix}$
+```math
+S=QK^T= \begin{bmatrix}1&1\\0&1\end{bmatrix}
+```
 
 接着加 causal mask（因果掩码）。序列位置从 0 开始，第 `i` 个位置只能访问 `j≤i` 的位置，因此：
 
-$S_{\text{masked}}= \begin{bmatrix} 1&-\infty\\ 0&1 \end{bmatrix}$
+```math
+S_{\text{masked}}= \begin{bmatrix} 1&-\infty\\ 0&1 \end{bmatrix}
+```
 
 第一行不能看第二个位置，所以把对应分数设成 $-\infty$。由于 $e^{-\infty}=0$，它经过 softmax 后权重为零。
 
 逐行做 softmax：
 
-$P= \begin{bmatrix} 1&0\\ \frac{1}{1+e}&\frac{e}{1+e} \end{bmatrix} \approx \begin{bmatrix} 1&0\\ 0.26894&0.73106 \end{bmatrix}$
+```math
+P= \begin{bmatrix} 1&0\\ \frac{1}{1+e}&\frac{e}{1+e} \end{bmatrix} \approx \begin{bmatrix} 1&0\\ 0.26894&0.73106 \end{bmatrix}
+```
 
 最后用权重汇总 V：
 
-$O[0]=1\times[10,20]+0\times[30,40]=[10,20]$
+```math
+O[0]=1\times[10,20]+0\times[30,40]=[10,20]
+```
 
-$O[1]=0.26894\times[10,20]+0.73106\times[30,40] \approx[24.6212,34.6212]$
+```math
+O[1]=0.26894\times[10,20]+0.73106\times[30,40] \approx[24.6212,34.6212]
+```
 
 ## Pytorch 验证
 
@@ -104,7 +118,9 @@ torch.testing.assert_close(output, expected, atol=1e-4, rtol=0)
 
 上述简介中的 attention 计算是：
 
-$O=\mathrm{softmax}(QK^T/\sqrt D)V$
+```math
+O=\mathrm{softmax}(QK^T/\sqrt D)V
+```
 
 但模型中的完整 attention 模块还包括生成 QKV 投影，以及输出投影。完整流程大致是：
 
@@ -372,7 +388,9 @@ qk = tl.dot(q, tl.trans(k))
 sm_scale = D ** -0.5
 ```
 
-$\text{sm\_scale}=\frac{1}{\sqrt D}$
+```math
+\text{sm\_scale}=\frac{1}{\sqrt D}
+```
 
 ```Python
 qk = tl.dot(q, tl.trans(k)) * sm_scale
@@ -384,7 +402,9 @@ qk = tl.dot(q, tl.trans(k)) * sm_scale
 
 ### Causal 条件
 
-$\text{causal}[i,j]=(i\ge j)$
+```math
+\text{causal}[i,j]=(i\ge j)
+```
 
 ```Python
 causal = offs_m[:, None] >= offs_n[None, :]
@@ -494,13 +514,17 @@ p                     v
 
 展开到单个元素就是：
 
-$(pV)_{i,d}=\sum_j p_{i,j}V_{j,d}$
+```math
+(pV)_{i,d}=\sum_j p_{i,j}V_{j,d}
+```
 
 含义是：对于 query 位置 `i`，把各个位置的 V 按对应权重累加起来。
 
 然后再除以该行分母：
 
-$O_{i,d}=\frac{\sum_j p_{i,j}V_{j,d}}{l_i}$
+```math
+O_{i,d}=\frac{\sum_j p_{i,j}V_{j,d}}{l_i}
+```
 
 ```Python
 acc = tl.dot(p.to(tl.float16), v) / l_i[:, None]
@@ -930,11 +954,17 @@ softmax([3, 4]) → 两个权重之和也为 1
 
 对于一个 query，假设已经处理过一些 key，保存三个状态：
 
-$m=\max_j s_j$
+```math
+m=\max_j s_j
+```
 
-$l=\sum_j e^{s_j-m}$
+```math
+l=\sum_j e^{s_j-m}
+```
 
-$acc=\sum_j e^{s_j-m}V_j$
+```math
+acc=\sum_j e^{s_j-m}V_j
+```
 
 这里的 $j$ 只包含目前已经扫描过的位置。
 
@@ -946,7 +976,9 @@ $acc=\sum_j e^{s_j-m}V_j$
 
 如果现在已经扫描完整行，输出就是：
 
-$O=\frac{acc}{l}$
+```math
+O=\frac{acc}{l}
+```
 
 难点在于：下一块可能带来更大的最大值，旧的 `l` 和 `acc` 就需要换算到新的基准。
 
@@ -970,7 +1002,9 @@ V：  [10, 20]
 
 最大值：
 
-$m_{\text{old}}=2$
+```math
+m_{\text{old}}=2
+```
 
 减去最大值后，指数权重为：
 
@@ -980,9 +1014,13 @@ $m_{\text{old}}=2$
 
 因此保存：
 
-$l_{\text{old}}=e^{-1}+1$
+```math
+l_{\text{old}}=e^{-1}+1
+```
 
-$acc_{\text{old}}=10e^{-1}+20$
+```math
+acc_{\text{old}}=10e^{-1}+20
+```
 
 暂时不做最终归一化，继续扫描。
 
@@ -990,7 +1028,9 @@ $acc_{\text{old}}=10e^{-1}+20$
 
 第二块分数是 `[3,4]`，所以新的全局最大值为：
 
-$m_{\text{new}}=\max(2,4)=4$
+```math
+m_{\text{new}}=\max(2,4)=4
+```
 
 第二块以 4 为基准计算：
 
@@ -1002,19 +1042,27 @@ $m_{\text{new}}=\max(2,4)=4$
 
 例如第一个位置，旧权重是：
 
-$e^{1-2}=e^{-1}$
+```math
+e^{1-2}=e^{-1}
+```
 
 换成新的基准后应该是：
 
-$e^{1-4}=e^{-3}$
+```math
+e^{1-4}=e^{-3}
+```
 
 它们之间差一个共同系数：
 
-$\alpha=e^{m_{\text{old}}-m_{\text{new}}}=e^{-2}$
+```math
+\alpha=e^{m_{\text{old}}-m_{\text{new}}}=e^{-2}
+```
 
 因为：
 
-$e^{s-m_{\text{old}}}\alpha =e^{s-m_{\text{new}}}$
+```math
+e^{s-m_{\text{old}}}\alpha =e^{s-m_{\text{new}}}
+```
 
 所以，所有旧权重都只需要乘同一个 $\alpha$，无需重新读取旧分数。
 

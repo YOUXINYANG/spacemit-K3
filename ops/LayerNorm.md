@@ -8,7 +8,9 @@ LayerNorm 全称 Layer Normalization（层归一化），是 Transformer 等神�
 
 例如，输入是一个二维矩阵：
 
-$X=\begin{bmatrix} 1&2&3&4\\ 5&6&7&8 \end{bmatrix}$
+```math
+X=\begin{bmatrix} 1&2&3&4\\ 5&6&7&8 \end{bmatrix}
+```
 
 LayerNorm 按行进行计算。第一行与第二行独立处理。
 
@@ -16,15 +18,21 @@ LayerNorm 按行进行计算。第一行与第二行独立处理。
 
 第一步：计算均值（Mean）
 
-$\mu=\frac{1}{N}\sum_{i=1}^{N}x_i $
+```math
+\mu=\frac{1}{N}\sum_{i=1}^{N}x_i
+```
 
 第二步：计算方差（Variance）
 
-$\sigma^2=\frac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2$
+```math
+\sigma^2=\frac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2
+```
 
 第三步：归一化并缩放平移
 
-$y_i=\frac{x_i-\mu}{\sqrt{\sigma^2+\epsilon}}\gamma_i+\beta_i$
+```math
+y_i=\frac{x_i-\mu}{\sqrt{\sigma^2+\epsilon}}\gamma_i+\beta_i
+```
 
 其中：
 
@@ -83,9 +91,13 @@ y = tensor([-1.3416, -0.4472,  0.4472,  1.3416])
 
 LayerNorm 的计算过程：
 
-$\mu=E[x],\qquad \sigma^2=E[(x-\mu)^2]$
+```math
+\mu=E[x],\qquad \sigma^2=E[(x-\mu)^2]
+```
 
-$y=\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}\cdot w+b$
+```math
+y=\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}\cdot w+b
+```
 
 如果直接使用多个独立的 pytorch 操作，可能写成：
 
@@ -221,21 +233,29 @@ cols = [256, 257, ..., 511]
 
 扫描整行，累加所有元素，再除以 N，得到均值。
 
-$\mu=\frac{1}{N}\sum x_i$
+```math
+\mu=\frac{1}{N}\sum x_i
+```
 
 ### PASS 2：Variance
 
 重新扫描整行，计算各个元素与均值之差的平方，再归约得到方差。
 
-$\sigma^2=\frac{1}{N}\sum(x_i-\mu)^2$
+```math
+\sigma^2=\frac{1}{N}\sum(x_i-\mu)^2
+```
 
 ### PASS 3：Output
 
 再次扫描整行，使用均值和方差完成归一化、仿射变换，写回输出。
 
-$y_i=(x_i-\mu)\cdot rstd\cdot w_i+b_i$
+```math
+y_i=(x_i-\mu)\cdot rstd\cdot w_i+b_i
+```
 
-$rstd=\frac{1}{\sqrt{\sigma^2+\epsilon}}$
+```math
+rstd=\frac{1}{\sqrt{\sigma^2+\epsilon}}
+```
 
 `rstd` 是标准差的倒数，提前计算可以避免为每个元素重复执行平方根和除法。
 
@@ -406,7 +426,9 @@ Y += row * stride
 
 假设：
 
-$X\in\mathbb{R}^{128\times1024}$
+```math
+X\in\mathbb{R}^{128\times1024}
+```
 
 输入矩阵按行连续存放，因此：
 
@@ -422,7 +444,9 @@ row = 2
 
 其输入起始地址变成：
 
-$X_{\text{row2}}=X_{\text{base}}+2\times1024$
+```math
+X_{\text{row2}}=X_{\text{base}}+2\times1024
+```
 
 由于指针已经被移动到当前行开头，后续访问本行对应列的数据，只需要：
 
@@ -501,7 +525,9 @@ x = tl.load(X + cols, mask=cols < N, other=0.).to(tl.float32)
 
 假设输入一行是：
 
-$X=[1,2,3,4,5,6,7,8]$
+```math
+X=[1,2,3,4,5,6,7,8]
+```
 
 循环实现：
 
@@ -565,11 +591,15 @@ rstd = 1 / tl.sqrt(var + eps)
 
 假设一行有 5 个元素：
 
-$X=[1,2,3,4,5]$
+```math
+X=[1,2,3,4,5]
+```
 
 其均值：
 
-$mean=3$
+```math
+mean=3
+```
 
 假设 `BLOCK_SIZE=4`，则需要两个数据块：
 
@@ -598,11 +628,15 @@ x = x - mean
 
 第二个 Block 就变成：
 
-$[5,0,0,0]-3=[2,-3,-3,-3]$
+```math
+[5,0,0,0]-3=[2,-3,-3,-3]
+```
 
 平方以后：
 
-$[4,9,9,9]$
+```math
+[4,9,9,9]
+```
 
 那么 0 元素也参与了方差的计算，导致计算错误。
 
@@ -631,7 +665,9 @@ rstd = 1 / tl.sqrt(var + eps)
 
 其中：
 
-$rstd=\frac{1}{\sqrt{var+\epsilon}}$
+```math
+rstd=\frac{1}{\sqrt{var+\epsilon}}
+```
 
 `rstd` 是标准差的倒数。
 
@@ -648,7 +684,9 @@ tl.store(Rstd + row, rstd)
 
 第三趟扫描的目的是为了计算最终输出：
 
-$y_i=(x_i-\mu)\times rstd\times w_i+b_i$
+```math
+y_i=(x_i-\mu)\times rstd\times w_i+b_i
+```
 
 官方代码实现：
 
@@ -808,7 +846,9 @@ nvl = tle.vconfig(-1, 1)
 
 如果 LayerNorm 有 256 个元素，处理完整一行通常需要：
 
-$256/32=8\text{ 次向量迭代}$
+```math
+256/32=8\text{ 次向量迭代}
+```
 
 这与标准 Triton 直接使用长度为 256 的 `tl.arange` 不同。在 raw 版本中，程序员需要自己明确组织这些向量循环。
 
@@ -834,7 +874,9 @@ python/tests/raw/test_raw_layernorm.py
 
 首先使用一个 FP32 向量累加器对输入求和，最后执行水平归约：
 
-$mean=\frac{\sum_i x_i}{N}$
+```math
+mean=\frac{\sum_i x_i}{N}
+```
 
 这里需要使用 `tle.vload`、`tle.cast` 和 `tle.vreduce_sum`。
 
@@ -844,11 +886,15 @@ $mean=\frac{\sum_i x_i}{N}$
 
 标准版使用：
 
-$var=E[(x-mean)^2]$
+```math
+var=E[(x-mean)^2]
+```
 
 而 raw 版本使用等价的数学公式：
 
-$\boxed{var=E[x^2]-mean^2}$
+```math
+\boxed{var=E[x^2]-mean^2}
+```
 
 这一方案使得 padding 0 不会贡献额外的平方和，而且平方和本身不依赖已经计算好的 mean。
 
@@ -856,7 +902,9 @@ $\boxed{var=E[x^2]-mean^2}$
 
 **第三趟：计算最终输出**
 
-$y_i=(x_i-mean)\times\frac{1}{\sqrt{var+\epsilon}}$
+```math
+y_i=(x_i-mean)\times\frac{1}{\sqrt{var+\epsilon}}
+```
 
 由于这个简化版本没有 weight 和 bias，所以不需要执行额外的仿射变换。
 

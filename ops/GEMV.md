@@ -4,7 +4,9 @@
 
 一个矩阵乘一个向量。
 
-$y = W x,\qquad W\in\mathbb{R}^{N\times K},\quad x\in\mathbb{R}^{K},\quad y\in\mathbb{R}^{N}$
+```math
+y = W x,\qquad W\in\mathbb{R}^{N\times K},\quad x\in\mathbb{R}^{K},\quad y\in\mathbb{R}^{N}
+```
 
 - `N`：矩阵的行数，也是输出元素个数。
 
@@ -14,7 +16,9 @@ $y = W x,\qquad W\in\mathbb{R}^{N\times K},\quad x\in\mathbb{R}^{K},\quad y\in\m
 
 具体计算公式：
 
-$y[i]=\sum_{k=0}^{K-1}W[i,k]x[k]$
+```math
+y[i]=\sum_{k=0}^{K-1}W[i,k]x[k]
+```
 
 特点：各行的计算互不依赖，但都使用同一个 x。
 

@@ -69,7 +69,9 @@ c_torch tensor([[-16.2812, -38.6250,   1.8633,  ...,  -2.6855,  -6.2422,  12.203
 
 假设需要计算：
 
-$C_{256\times256}=A_{256\times256}\times B_{256\times256} $
+```math
+C_{256\times256}=A_{256\times256}\times B_{256\times256}
+```
 
 在 Pytorch 中，只需要：
 
@@ -344,7 +346,9 @@ mm_kernel[grid](...)
 
 假设：
 
-$C=A\times B$
+```math
+C=A\times B
+```
 
 其中：
 
@@ -360,7 +364,9 @@ $C=A\times B$
 
 每次执行：
 
-$(32\times64)\times(64\times32) =(32\times32)$
+```math
+(32\times64)\times(64\times32) =(32\times32)
+```
 
 每次计算得到一个部分结果，再把四个部分结果累加，得到最终的 C Tile。
 
@@ -538,7 +544,9 @@ a_ptrs = A + rows[:, None] * sa0 + k[None, :] * sa1
 
 假设 A 是行优先连续存储，访问 `A[i,j]` 的元素地址可以表示为：
 
-$\mathrm{Addr}(A[i,j]) =\mathrm{Base}(A)+i\cdot sa0+j\cdot sa1$
+```math
+\mathrm{Addr}(A[i,j]) =\mathrm{Base}(A)+i\cdot sa0+j\cdot sa1
+```
 
 `sa0` 和 `sa1` 分别表示矩阵 A 在两个维度上的 步长（Stride）。
 
@@ -902,7 +910,9 @@ MICRO_N = 32
 
 例如一个微块乘法：
 
-$A_{16\times8}\times B_{8\times32} =C_{16\times32}$
+```math
+A_{16\times8}\times B_{8\times32} =C_{16\times32}
+```
 
 但要注意，实际矩阵引擎的执行不一定表现为程序中一次完整的 16×8 与 8×32 乘法指令。这里描述的是供编译器和矩阵引擎使用的数据打包粒度。
 
@@ -983,7 +993,9 @@ MICRO_N = 32
 
 对于每个 Program：
 
-$A_{128\times512}\times B_{512\times128}$
+```math
+A_{128\times512}\times B_{512\times128}
+```
 
 `SUB_BLK_K=256`，因此沿 K 维分成两次：
 
