@@ -13,13 +13,13 @@ B = [[5, 6]]     形状：(1, 2)，1 行 2 列
 
 执行：
 
-```Plain Text
+```Plain
 C = torch.cat([A, B], dim=0)
 ```
 
 结果是：
 
-```Plain Text
+```Plain
 C = [[1, 2],
      [3, 4],
      [5, 6]]     形状：(3, 2)
@@ -51,7 +51,7 @@ C.shape = (3, 6)
 假设每个列块包含 4 个元素，即 `BLOCK_N = 4`：
 
 ```Python
-第 0 个列块       第 1 个列块
+                    第 0 个列块       第 1 个列块
                     列 0、1、2、3     列 4、5
 
 C 第 0 行（来自 A）  [ program(0,0) ] [ program(0,1) ]
@@ -524,7 +524,7 @@ PASS cat3 4x1000 + 2x1000 + 3x1000
 
 在 Python 侧安排好每个输入的输出区域：
 
-```Plain Text
+```Plain
 A → C 的第一段
 B → C 的第二段
 D → C 的第三段
@@ -532,7 +532,7 @@ D → C 的第三段
 
 再分别执行复制：
 
-```Plain Text
+```Plain
 启动 copy kernel：A → C 的第一段
 启动 copy kernel：B → C 的第二段
 启动 copy kernel：D → C 的第三段
@@ -580,13 +580,13 @@ K：输入数量
 
 ## Cat 和相关算子区别
 
-### Cat 和 stack 
+### Cat 和 stack
 
 `cat` 沿已有维度拼接，`stack` 会新增一个维度。
 
 例如，两个输入都是 `(2, 3)`：
 
-```Plain Text
+```Plain
 a = torch.ones(2, 3)
 b = torch.zeros(2, 3)
 ```
@@ -594,4 +594,3 @@ b = torch.zeros(2, 3)
 结果形状分别是：
 
 约束差别：`stack` 要求所有输入形状相同；`cat` 允许拼接维度的长度不同。
-
