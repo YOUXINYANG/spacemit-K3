@@ -1,13 +1,3 @@
----
-tags:
-  - papers/llm-inference
-  - arm-sme
-  - 论文学习
-aliases:
-  - SMEPilot 入门解读
-date: 2026-11-06
-arxiv_id: "2606.16332"
----
 # SMEPilot 论文解读
 
 论文下载链接：[arxiv.org/pdf/2606.16332v1](https://arxiv.org/pdf/2606.16332v1)
