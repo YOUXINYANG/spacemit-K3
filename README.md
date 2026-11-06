@@ -6,7 +6,7 @@
 
 先阅读 [K3 平台笔记](ops/K3.md)，了解平台与 spine-triton。再从 GEMM、Reduction 和 Softmax 入手，按需阅读归一化、Attention 等算子笔记。阅读示例时，建议具备 Python、PyTorch 和张量运算的基础知识。
 
-如需在 K3 云实例上部署模型，可阅读 [Qwen 部署笔记](qwen/Qwen%20部署.md)，按顺序完成环境检查、模型下载、推理验证、性能测试与 API 服务启动。
+如需在 K3 云实例上部署模型，可先阅读 [Qwen 预装版部署笔记](qwen/Qwen%20预装版构建.md)，按顺序完成环境检查、模型下载、推理验证、性能测试与 API 服务启动。随后阅读 [Qwen 源码版构建与基线验证](qwen/Qwen%20源码版构建.md)，了解版本固定、编译配置、推理验证及核心调度检查，为后续性能分析与优化建立源码基线。
 
 关注推理性能时，可从 [SMEPilot 论文解读](papers-study/SMEPilot.md) 了解 prefill 和 decode 的性能瓶颈，再参照 [毕设课题研究计划](qwen/毕设课题研究计划.md) 查看 K3 上的源码分析、性能测量与优化实验安排。
 
@@ -34,11 +34,12 @@
 | [Cumsum / Scan](ops/Cumsum%20%26%20Scan.md)     | 累积和与前缀扫描               |
 | [Cat / Concat](ops/Cat%20%26%20Concat.md)       | 张量拼接与数据搬运             |
 
-### Qwen 模型部署
+### Qwen 模型部署与源码构建
 
 | 文档 | 内容 |
 | ---- | ---- |
-| [Qwen 部署笔记](qwen/Qwen%20部署.md) | K3 云实例环境检查、llama.cpp 版本与后端确认、Qwen3-0.6B Q4_0 GGUF 模型推理、性能基线测试与 API 服务部署 |
+| [Qwen 预装版部署笔记](qwen/Qwen%20预装版构建.md) | K3 云实例环境检查、预装 llama.cpp 版本与后端确认、Qwen3-0.6B Q4_0 GGUF 模型推理、性能基线测试与 API 服务部署 |
+| [Qwen 源码版构建与基线验证](qwen/Qwen%20源码版构建.md) | SpacemiT llama.cpp 版本固定、CMake 配置与编译、运行环境差异、推理与性能验证、预装版基线对照及核心调度检查 |
 
 ### 论文解读与研究计划
 
