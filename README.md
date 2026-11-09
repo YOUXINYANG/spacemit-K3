@@ -12,7 +12,22 @@
 
 针对复制热点，可继续阅读 [memcpy1d 实验](qwen/memcpy1d%20实验.md)，了解现有 RVV 复制与标准库 `memcpy` 在热缓冲区和大源数据集轮转条件下的对照结果；复现实验时参照 [TCM 拷贝微基准说明](qwen/benchmarks/tcm-copy/README.md) 构建、检查正确性并计时。
 
-关注推理性能时，可从 [SMEPilot 论文解读](papers-study/SMEPilot.md) 了解 prefill 和 decode 的性能瓶颈，再参照 [毕设课题研究计划](qwen/毕设课题研究计划.md) 查看 K3 上的源码分析、性能测量与优化实验安排。
+关注推理性能时，可从 [SMEPilot 论文解读](papers-study/SMEPilot/SMEPilot.md) 了解 prefill 和 decode 的性能瓶颈，结合目录内的 [论文 PDF](papers-study/SMEPilot/SMEPilot.pdf) 与 [Roofline 原图](papers-study/SMEPilot/assets/smepilot-figure2-roofline.png) 对照阅读，再参照 [毕设课题研究计划](qwen/毕设课题研究计划.md) 查看 K3 上的源码分析、性能测量与优化实验安排。
+
+## 仓库结构
+
+```text
+.
+├── datasheet/                 # K3 数据手册
+├── ops/                       # 平台与 spine-triton 算子笔记
+├── papers-study/              # 论文解读与配套资料
+│   └── SMEPilot/
+│       ├── SMEPilot.md        # 论文解读
+│       ├── SMEPilot.pdf       # 论文原文
+│       └── assets/            # 论文配图
+└── qwen/                      # 模型部署、研究计划与性能实验
+    └── benchmarks/tcm-copy/   # TCM 拷贝微基准源码与说明
+```
 
 ## 文档索引
 
@@ -53,7 +68,9 @@
 
 | 文档 | 内容 |
 | ---- | ---- |
-| [SMEPilot 论文解读](papers-study/SMEPilot.md) | 可伸缩矩阵扩展下的 LLM 推理分析与优化，涵盖 prefill 与 decode 瓶颈、Roofline 模型、矩阵分块、注意力流水线与数据布局 |
+| [SMEPilot 论文解读](papers-study/SMEPilot/SMEPilot.md) | 可伸缩矩阵扩展下的 LLM 推理分析与优化，涵盖 prefill 与 decode 瓶颈、Roofline 模型、矩阵分块、注意力流水线、数据布局、执行规划与实验解读 |
+| [SMEPilot 论文原文](papers-study/SMEPilot/SMEPilot.pdf) | 本地 PDF，便于与解读笔记对照阅读 |
+| [SMEPilot Roofline 配图](papers-study/SMEPilot/assets/smepilot-figure2-roofline.png) | 论文图 2，辅助理解计算吞吐与共享内存带宽约束 |
 | [毕设课题研究计划](qwen/毕设课题研究计划.md) | Qwen 推理流程、K3 上的 llama.cpp 调用路径、热点分析、算子优化与端到端验证 |
 
 ## 微基准使用说明
